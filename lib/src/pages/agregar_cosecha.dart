@@ -15,9 +15,11 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
   String especie= "1";
   String cantidad = "0";
   String date = "Elegir Fecha";
-  String etapaCosecha = "1";
+  String etapaCosecha = "S";
+  String obsCosecha = "";
   String invernaderoSeleccionado = "1";
   List<DropdownMenuItem<String>> listaInve= new List();
+  List<DropdownMenuItem<String>> listaConfPlants= new List();
    
    
   //TextEditingController _cantController = new TextEditingController();
@@ -30,11 +32,12 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
         child: Column(
           children: <Widget>[
             SizedBox(height:30.0),
+            _invernadero(),
             _tipoPlanta(),
             _cantidad(),
-            _fecha(),
-            _invernadero(),
+            _observacion(),
             _etapaCosecha(),
+            _fecha(),
             _aceptarCosecha()
             
           ],
@@ -57,72 +60,88 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
           ));
 
       return Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                child: Text('Especie:', style: TextStyle(
+      children: <Widget>[
+        
+        Container(
+          padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
+          child: FutureBuilder(
+            future: _menuItemConf(),
 
-                  fontSize: 18.0,
-                  color: Colors.black
-                  
-                ),), 
-                padding: EdgeInsets.only(left:25.0),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return DropdownButtonFormField(
+                isExpanded: true,
+                value: especie ,
+                items: snapshot.data,
+                hint: Text('Especie'),
+                icon: Icon(Icons.keyboard_arrow_down,color:Color(0xFF259aca)),
+            
+                decoration: InputDecoration(
+                  //focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xFF259aca))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Color(0xFF259aca))),
+           
+            focusColor: Colors.grey,
+            
+                
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Color(0xFF259aca),
+                  width: 0.5,
+                  style: BorderStyle.solid,
+                ),
               ),
-            ],
+
+            labelText: 'Especie', labelStyle: TextStyle(fontSize:16, color:Color(0xFF259aca), letterSpacing: 3),
+                
+                
+                
+              ),
+               style: TextStyle(inherit: false, color: Colors.grey, decorationColor: Colors.white, fontSize: 16.0),
+              onChanged: (opt){
+                  setState(() {
+                    especie = opt;
+                  });
+                }
+              );
+            },
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
-            child: DropdownButton(
-              isExpanded: true,
-              value: especie,
-              items:lista,
-              
-              onChanged: (opt){      
-                setState(() {
-                  especie = opt;
-                          
-                });
-              },
-              style: TextStyle(inherit: false, color: Colors.blueGrey, decorationColor: Colors.white, fontSize: 18.0),
-              
-            ),
-          ),
-        ],
-      );
+        ),
+      ],
+    );
+
+
   }
 
   Widget _cantidad() {
 
     return Column(
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
-              child: Text('Cantidad a Cosechar:', style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.blueGrey),
-              ), 
-              padding: EdgeInsets.only(left:25.0),
-            ),
-          ],
-        ),
-
         Container(
           padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
-          child: TextFormField(
-            initialValue: cantidad,
+          child: TextField(
+            //initialValue: cantidad,
+            style: const TextStyle(color: Colors.grey, fontSize: 16.0),
             keyboardType: TextInputType.number,
-            cursorColor: Colors.blueGrey,
+            cursorColor: Colors.grey,
+
+            
             decoration: InputDecoration(
               
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xFF259aca))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Color(0xFF259aca))),
+           
+            focusColor: Colors.grey,
+              
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
+                borderRadius: BorderRadius.circular(10.0),
                 borderSide: BorderSide(
-                  color: Colors.amber,
+                  color: Color(0xFF259aca),
+                  width: 0.5,
                   style: BorderStyle.solid,
                 ),
-              )
+              ),
+             
+            labelText: 'Cantidad', labelStyle: TextStyle(fontSize:16, color:Color(0xFF259aca), letterSpacing: 3),
             ),
             
             onChanged: (value) {
@@ -159,23 +178,16 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
 
     return Column(
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
-                  child: Text('Fecha de Inicio:', style: TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.blueGrey),
-                  ), 
-                  padding: EdgeInsets.only(left:25.0),
-                ),
-          ],
-        ),
+        
         Container(
           padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
           height: 100.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0)
+                borderRadius: BorderRadius.circular(10.0),
+                side: BorderSide(color: Color(0xFF259aca))
+              
+                
             ),
             elevation: 0.0,
             onPressed: () {
@@ -187,7 +199,7 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
                 minTime: DateTime(2000, 1, 1),
                 maxTime: DateTime(2022, 12, 31), onConfirm: (dates) {
                   print('confirm $dates');
-                  date = '${dates.day}/${dates.month}/${dates.year}';
+                  date = '${dates.day}-${dates.month}-${dates.year}';
                   setState(() {});
                 }, 
                 currentTime: DateTime.now(), locale: LocaleType.es);
@@ -206,13 +218,13 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
                             Icon(
                               Icons.date_range,
                               size: 20.0,
-                              color: Colors.blueGrey,
+                              color: Colors.grey,
                             ),
                             Text(
                               "  $date",
                               style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: 18.0
+                                color: Colors.grey,
+                                fontSize: 16.0
                               ),
                             ),
                           ],
@@ -220,7 +232,7 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
                       )
                     ],
                   ),
-                  Icon(Icons.keyboard_arrow_right)
+                  Icon(Icons.keyboard_arrow_down,color:Color(0xFF259aca))
                 ],
               ),
             ),
@@ -238,35 +250,47 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
   
     return Column(
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
-              child: Text('Invernadero:', style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.blueGrey),
-              ), 
-              padding: EdgeInsets.only(left:25.0),
-            ),
-          ],
-        ),
+        
         Container(
           padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
           child: FutureBuilder(
             future: _menuItemInve(),
 
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return DropdownButton(
+              return DropdownButtonFormField(
                 isExpanded: true,
                 value: invernaderoSeleccionado ,
                 items: snapshot.data,
-                onChanged: (opt){
+                hint: Text('Invernadero'),
+                icon: Icon(Icons.keyboard_arrow_down,color:Color(0xFF259aca)),
+            
+                decoration: InputDecoration(
+                  //focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xFF259aca))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Color(0xFF259aca))),
+           
+            focusColor: Colors.grey,
+            
+                
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Color(0xFF259aca),
+                  width: 0.5,
+                  style: BorderStyle.solid,
+                ),
+              ),
+
+            labelText: 'Invernadero', labelStyle: TextStyle(fontSize:16, color:Color(0xFF259aca), letterSpacing: 3),
+                
+                
+                
+              ),
+               style: TextStyle(inherit: false, color: Colors.grey, decorationColor: Colors.white, fontSize: 16.0),
+              onChanged: (opt){
                   setState(() {
                     invernaderoSeleccionado = opt;
                   });
-
-                 // print(invernaderoSeleccionado);
-                },
-                style: TextStyle(inherit: false, color: Colors.blueGrey, decorationColor: Colors.white, fontSize: 18.0),
+                }
               );
             },
           ),
@@ -297,43 +321,52 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
    return listaInve;
   }
 
+   Future<List<DropdownMenuItem<String>>> _menuItemConf() async{
+    //final bloc = Provider.of(context);
+    final lecturaProvider = new UsuarioProvider();
+
+   final datos = await lecturaProvider.datosConfPlantas(context);
+
+   int cant = datos.data.length;
+   listaConfPlants= [];
+
+   for(int i=0 ; i < cant ; i++){
+
+     listaConfPlants.add(DropdownMenuItem(
+            child: Text(datos.data[i].plantDesc),
+            value: (datos.data[i].confCodi).toString()//aca tiene que ser mi id
+          ));
+   }
+
+   //print(listaInve);
+   return listaConfPlants;
+  }
+
   Widget _etapaCosecha() {
 
     List<DropdownMenuItem<String>> lista = new List();
     lista.add(DropdownMenuItem(
       child: Text('Germinación'),
-      value: '1' 
+      value: 'S' 
     ));
     lista.add(DropdownMenuItem(
       child: Text('Vegetativo'),
-      value: '2' 
+      value: 'P' 
     ));
     lista.add(DropdownMenuItem(
       child: Text('Floración'),
-      value: '3' 
+      value: 'F' 
     ));
       
 
       return Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                child: Text('Etapa:', style: TextStyle(
-
-                  fontSize: 18.0,
-                  color: Colors.blueGrey
-                  
-                ),), 
-                padding: EdgeInsets.only(left:25.0),
-              ),
-            ],
-          ),
           Container(
             padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
-            child: DropdownButton(
+            child: DropdownButtonFormField(
               isExpanded: true,
               value: etapaCosecha,
+              icon: Icon(Icons.keyboard_arrow_down, color:Color(0xFF259aca) ,),
               items:lista,
               onChanged: (opt){      
                 setState(() {
@@ -341,7 +374,25 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
                           
                 });
               },
-              style: TextStyle(inherit: false, color: Colors.blueGrey, decorationColor: Colors.white, fontSize: 18.0),
+              decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xFF259aca))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Color(0xFF259aca))),
+           
+            focusColor: Colors.grey,
+            
+                
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Color(0xFF259aca),
+                  width: 0.5,
+                  style: BorderStyle.solid,
+                ),
+              ),
+
+            labelText: 'Etapa', labelStyle: TextStyle(fontSize:16, color:Color(0xFF259aca), letterSpacing: 3)
+            ),
+              style: TextStyle(inherit: false, color: Colors.grey, decorationColor: Colors.white, fontSize: 16.0),
               
             ),
           ),
@@ -353,38 +404,157 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
 
   Widget _aceptarCosecha() {
 
+   return Container(
+     padding: EdgeInsets.only(bottom: 20),
+     child: GestureDetector(
+          child: Container(
+            decoration:BoxDecoration(
+              gradient: LinearGradient(colors: [Color(0xFF52bbbf),Color(0xFF259aca)]),
+              borderRadius: BorderRadius.circular(6.0),
+              boxShadow: [BoxShadow(color: Color(0xFF6078ea).withOpacity(.3), offset: Offset(0.0, 8.0), blurRadius: 8.0)]
+            ),
+            padding: EdgeInsets.symmetric(horizontal:90.0, vertical:15.0),
+            child:Text('Aceptar', style: TextStyle(color: Colors.white,fontFamily: "Poppins-Bold", fontSize: 18,letterSpacing: 1.0),)
+          ),
+          onTap:(){
+
+            if(date == "Elegir Fecha" || cantidad == "0"){
+              showDialog(
+                  context: context,
+                  builder: (context){
+                    return AlertDialog(
+                      title: Text('Info'),
+                      content: Text('Por favor Complete todos los campos.'),
+                      actions: <Widget>[
+                        FlatButton(
+                          child:Text('Ok'),
+                          onPressed:()=> Navigator.of(context).pop(),
+                        )
+                      ],
+                    );
+                  }
+                );
+            }
+            else{
+              
+            _submit();
+            
+              
+            }
+            
+
+          }
+        ),
+   );
+     }
+
+ Widget  _observacion() {
+
+   
+
+    return Column(
+      children: <Widget>[
+      
+        Container(
+          padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20.0),
+          child: TextFormField(
+            //initialValue: cantidad,
+            style: const TextStyle(color: Colors.grey, fontSize: 16.0),
+            keyboardType: TextInputType.text,
+            cursorColor: Colors.blueGrey,
+            decoration: InputDecoration(
+              
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xFF259aca))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Color(0xFF259aca))),
+           
+            focusColor: Colors.grey,
+              
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Color(0xFF259aca),
+                  width: 0.5,
+                  style: BorderStyle.solid,
+                ),
+              ),
+             
+            labelText: 'Observacion', labelStyle: TextStyle(fontSize:16, color:Color(0xFF259aca), letterSpacing: 3),
+            ),
+            
+            onChanged: (value) {
+              
+                setState(() {
+                  obsCosecha= value;
+                });
+              
+            }),
+        ),
+      ],
+    );
+
+ }
+
+  void _submit() async{
+
+    final lecturaProvider = new UsuarioProvider();
     final bloc = Provider.of(context);
 
-   return GestureDetector(
-        child: Container(
-          decoration:BoxDecoration(
-            gradient: LinearGradient(colors: [Color(0xFF52bbbf),Color(0xFF259aca)]),
-            borderRadius: BorderRadius.circular(6.0),
-            boxShadow: [BoxShadow(color: Color(0xFF6078ea).withOpacity(.3), offset: Offset(0.0, 8.0), blurRadius: 8.0)]
-          ),
-          padding: EdgeInsets.symmetric(horizontal:90.0, vertical:15.0),
-          child:Text('Aceptar', style: TextStyle(color: Colors.white,fontFamily: "Poppins-Bold", fontSize: 18,letterSpacing: 1.0),)
-        ),
-        onTap:(){
+    final respuesta = {
 
-          final respuesta = {
+            "even":"I",
+            "esta":"$etapaCosecha",
+            "obse":"$obsCosecha",
+            "fech_inic":"$date",
+            "user":"${bloc.email}",
+            "conf_plan": int.parse(especie),
+            "cant": int.parse(cantidad) ,
+            "inve_codi": int.parse(invernaderoSeleccionado)
 
-          '"even"':'"I"',
-          '"esta"':'"$etapaCosecha"',
-          '"obse"':'"Plantacion de lechuga mantecada"',
-          '"cant"': int.parse(cantidad) ,
-          '"fech_inic"':'"$date"',
-          '"user"':'"${bloc.email}"',
-          '"conf_plan"': int.parse(especie),
-          '"inve_codi"': int.parse(invernaderoSeleccionado)
-
-          };
-          print(respuesta);
-
-        }
-      );
-     }
+            };
+    print(respuesta);
+    final resp = await lecturaProvider.addCosecha(respuesta);
     
- 
+    if (resp['code'] == "1"){
+      showDialog(
+                  context: context,
+                  builder: (context){
+                    return AlertDialog(
+                      title: Text('Exito'),
+                      content: Text('Datos Agregados Correctamente.'),
+                      actions: <Widget>[
+                        FlatButton(
+                          child:Text('Ok'),
+                          onPressed:()=> Navigator.pushNamed(context, 'dashboard'),
+                        )
+                      ],
+                    );
+                  }
+                );
+    }
+    else{
+      showDialog(
+                  context: context,
+                  builder: (context){
+                    return AlertDialog(
+                      title: Text('Error'),
+                      content: Text('${resp['message']}'),
+                      actions: <Widget>[
+                        FlatButton(
+                          child:Text('Ok'),
+                          onPressed:()=> Navigator.of(context).pop(),
+                        )
+                      ],
+                    );
+                  }
+                );
+
+    }
+    
+
+            
+
+  }
+    
+
 
   }
