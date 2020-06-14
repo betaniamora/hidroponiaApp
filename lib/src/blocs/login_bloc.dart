@@ -10,6 +10,7 @@ class LoginBloc with Validators{
   final _passwordController    = BehaviorSubject<String>();
   final _emailController       = BehaviorSubject<String>();
   final _invernaderoController = BehaviorSubject<int>();
+  final _invernaderoNameController = BehaviorSubject<String>();
 
 
   //recuperar datos del stream
@@ -17,6 +18,7 @@ class LoginBloc with Validators{
  Stream<String> get emailStream    => _emailController.stream.transform(validarEmail);
  Stream<String> get passwordStream => _passwordController.stream.transform(validarPassword);
  Stream<int> get invernaderoStream => _invernaderoController.stream;
+ Stream<String> get invernaderoNameStream => _invernaderoNameController.stream;
 
 Stream<bool> get formValidStream => CombineLatestStream.combine2(emailStream, passwordStream, (e, p) => true);
 
@@ -25,17 +27,20 @@ Stream<bool> get formValidStream => CombineLatestStream.combine2(emailStream, pa
   Function(String) get changeEmail => _emailController.sink.add;
   Function(String) get changePasword => _passwordController.sink.add;
   Function(int) get changeInvernadero => _invernaderoController.sink.add;
+  Function(String) get changeNameInvernadero => _invernaderoNameController.sink.add;
 
   //obtener ultimos valores ingresados
 
   String get email=> _emailController.value;
   String get pass=> _passwordController.value;
   int get invernadero => _invernaderoController.value;
+  String get invernaderoName => _invernaderoNameController.value;
 
   dispose(){
     _emailController?.close();
     _passwordController?.close();
     _invernaderoController?.close();
+    _invernaderoNameController?.close();
   }
 
 }
