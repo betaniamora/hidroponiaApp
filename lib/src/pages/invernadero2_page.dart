@@ -90,6 +90,7 @@ class InvernaderoPage2 extends StatelessWidget {
     final bloc = Provider.of(context);
     return GestureDetector(
       onTap: (){
+        bloc.changeNameInvernadero(datos);
         Navigator.pushNamed(context, 'dashboard', arguments: datos);
         bloc.changeInvernadero(key);
       },
