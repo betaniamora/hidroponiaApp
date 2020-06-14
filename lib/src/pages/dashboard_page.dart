@@ -25,7 +25,7 @@ class _DashboardPageState extends State<DashboardPage> {
     final invernadero  = ModalRoute.of(context).settings.arguments.toString();
     return Scaffold(
       drawer: Drawer(),
-      appBar: appbar('$invernadero'),
+      appBar: appbar('${bloc.invernaderoName}'),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
            Navigator.pushNamed(context, 'nueva_cosecha');
