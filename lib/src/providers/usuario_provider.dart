@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:formvalidation/src/blocs/provider.dart';
+import 'package:formvalidation/src/models/conf_plant_model.dart';
 import 'package:formvalidation/src/models/datos_model.dart';
 import 'package:formvalidation/src/models/lectura_model.dart';
 import 'package:formvalidation/src/preferencias_usuario/referencias_usuario.dart';
@@ -41,6 +42,28 @@ class UsuarioProvider{
     }else{
       return {'ok':false, 'mensaje':decodeResp['message']};
     }
+  }
+
+   Future <Map<String , dynamic>> addCosecha(Map <String,Object> authData) async{
+
+   
+
+    final resp = await http.post(
+      'http://192.168.64.2:80/hidroponia/consulta/cosecha.php',
+      body: json.encode(authData)
+    );
+
+    Map<String, dynamic> decodeResp = json.decode(resp.body);
+
+    //print(decodeResp);
+
+   
+    //int respuesta = int.parse(decodeResp['code']) ;
+
+      print(decodeResp);
+     //  print(decodeResp[0].code);
+      return decodeResp ;
+    
   }
 
   Future<DatosModel> datosGeneral(String email, String password ) async{
@@ -128,6 +151,34 @@ class UsuarioProvider{
     }else{
       return {'ok':false, 'token':decodeResp['error']['message']};
     }
+  }
+
+   Future<ConfPlantModel> datosConfPlantas(BuildContext context ) async{
+
+     final bloc = Provider.of(context);
+
+    final authData= {
+      'inve_codi': bloc.invernadero ,
+    };
+
+    final resp = await http.post(
+      'http://192.168.64.2:80/hidroponia/consulta/conf_plantas.php',
+      body: json.encode(authData)
+    );
+
+    //Map<String, dynamic> decodeResp = json.decode(resp.body);
+
+     final datosModel= confPlantModelFromJson(resp.body);
+    
+      print (datosModel);
+      int count = datosModel.data.length;
+      String titulo = datosModel.data[0].plantDesc;
+      print(count);
+      
+
+      
+    return datosModel;
+
   }
 
 
