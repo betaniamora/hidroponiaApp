@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:formvalidation/src/blocs/provider.dart';
 import 'package:formvalidation/src/models/lectura_model.dart';
+import 'package:formvalidation/src/models/lista_cosecha_model.dart';
 import 'package:formvalidation/src/pages/wave_view.dart';
 import 'package:formvalidation/src/providers/usuario_provider.dart';
 import 'package:formvalidation/src/widgets/appbar.dart';
+import 'package:formvalidation/src/widgets/cosecha_list.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:google_fonts/google_fonts.dart';
 //import 'liquid_script.dart' show liquidScript;
@@ -73,7 +75,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           nivelAgua(),
                         ]
                       ),
-                        shape: RoundedRectangleBorder(
+                      shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         elevation: 5,
@@ -85,7 +87,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       
 
                     ] 
-                  )
+                  ),
+                  _footer(context),
                   
                 ]
               ),
@@ -642,4 +645,36 @@ final lecturaProvider = new UsuarioProvider();
     );
 
   }
+
+Widget _footer(BuildContext context){
+  final usuariosProvider = new UsuarioProvider();
+  // peliculasProvider.getPopulares();
+  return Container(
+    width: double.infinity,
+    child: Column(
+      //crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          //padding: EdgeInsets.only(left:20.0),
+          child: _titulo('COSECHAS'),
+        ),
+       // SizedBox(height:5.0),
+
+        FutureBuilder(
+          future: usuariosProvider.listaCosecha(context),
+          builder: (BuildContext context, AsyncSnapshot<ListaCosechasModel> snapshot) {
+            if(snapshot.hasData){
+              return CosechasHorizontal(
+                cosechas: (snapshot.data));
+            }else{
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
+
+      ],
+    ),
+  );
+}
+
 }
