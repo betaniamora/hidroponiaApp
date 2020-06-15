@@ -6,6 +6,7 @@ import 'package:formvalidation/src/blocs/provider.dart';
 import 'package:formvalidation/src/models/conf_plant_model.dart';
 import 'package:formvalidation/src/models/datos_model.dart';
 import 'package:formvalidation/src/models/lectura_model.dart';
+import 'package:formvalidation/src/models/lista_cosecha_model.dart';
 import 'package:formvalidation/src/preferencias_usuario/referencias_usuario.dart';
 import 'package:http/http.dart' as http;
 
@@ -177,6 +178,29 @@ class UsuarioProvider{
       
 
       
+    return datosModel;
+
+  }
+
+  Future<ListaCosechasModel> listaCosecha(BuildContext context) async{
+
+     final bloc = Provider.of(context);
+
+    final authData= {
+      'inve_codi': bloc.invernadero
+    };
+
+    final resp = await http.post(
+      'http://192.168.64.2:80/hidroponia/consulta/lista_cosechas.php',
+      body: json.encode(authData)
+    );
+
+    //Map<String, dynamic> decodeResp = json.decode(resp.body);
+
+     final datosModel= listaCosechasModelFromJson(resp.body);
+    
+     
+
     return datosModel;
 
   }
