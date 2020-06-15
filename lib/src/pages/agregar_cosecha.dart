@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formvalidation/src/blocs/provider.dart';
-import 'package:formvalidation/src/providers/usuario_provider.dart' as usuarioProvider;
 import 'package:formvalidation/src/providers/usuario_provider.dart';
 import 'package:formvalidation/src/widgets/appbar.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -48,17 +47,6 @@ class _AgregarCosechaState extends State<AgregarCosecha> {
 
   Widget _tipoPlanta() {
       
-      List<DropdownMenuItem<String>> lista = new List();
-
-      lista.add(DropdownMenuItem(
-            child: Text('Lechuga'),
-            value: '1' //aca tiene que ser mi id
-          ));
-      lista.add(DropdownMenuItem(
-            child: Text('Rucula'),
-            value: '2' //aca tiene que ser mi id
-          ));
-
       return Column(
       children: <Widget>[
         
